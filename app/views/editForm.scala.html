@@ -1,0 +1,31 @@
+@(id: Long, productForm: Form[ProductMy])
+
+@import helper._
+
+@main {
+
+    <h2>Edit product</h2>
+
+    @form(routes.HomeController.update(id)) {
+
+        <fieldset>
+            @CSRF.formField
+            @inputText(productForm("brand"), '_label -> "Brand", '_help -> "")
+            @inputText(productForm("model"), '_label -> "Model", '_help -> "")
+            @inputText(productForm("article"), '_label -> "Article", '_help -> "")
+            @inputText(productForm("releaseDate"), '_label -> "Release date", '_help -> "")
+        </fieldset>
+
+        <div class="actions">
+            <input type="submit" value="Save this product" class="btn btn-success"> or
+            <a href="@routes.HomeController.list()" class="btn btn-primary">Cancel</a>
+        </div>
+
+    }
+<br/>
+    @form(routes.HomeController.delete(id), 'class -> "topRight") {
+        @CSRF.formField
+        <input type="submit" value="Delete this product" class="btn btn-danger">
+    }
+
+}

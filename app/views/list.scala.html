@@ -1,0 +1,39 @@
+@(products: List[ProductMy])
+
+@main {
+
+    <h2>@Messages("All products")</h2>
+
+    @if(flash.containsKey("success")) {
+        <div class="alert-message warning">
+            <strong>Done!</strong> @flash.get("success")
+        </div>
+    }
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">brand</th>
+                <th scope="col">model</th>
+                <th scope="col">article</th>
+                <th scope="col">release date</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        @for(product <- products) {
+            <tr>
+                <td><a href="@routes.HomeController.showEditForm(product.id)">@product.brand</a></td>
+                <td>@product.model</td>
+                <td>@product.article</td>
+                <td>@product.releaseDate.format("dd MMM yyyy")</td>
+            </tr>
+        }
+
+        </tbody>
+    </table>
+
+    <a class="btn btn-success" id="add" href="@routes.HomeController.showCreateForm()">Add a new product</a>
+
+}
+
