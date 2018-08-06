@@ -21,8 +21,8 @@ public class HomeController extends Controller {
     private FormFactory formFactory;
 
     @Inject
-    public HomeController(FormFactory formFactory, ProductRepository computerRepository) {
-        this.productRepository = computerRepository;
+    public HomeController(FormFactory formFactory, ProductRepository productRepository) {
+        this.productRepository = productRepository;
         this.formFactory = formFactory;
     }
 
