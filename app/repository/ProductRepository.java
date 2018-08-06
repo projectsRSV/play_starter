@@ -1,54 +1,57 @@
 package repository;
 
+import io.ebean.Ebean;
+import io.ebean.EbeanServer;
 import io.ebean.Model;
+import io.ebean.Transaction;
 import models.ProductMy;
+import play.db.ebean.EbeanConfig;
 
+import javax.inject.Inject;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 public class ProductRepository {
 
-//    private EbeanServer ebeanServer;
+    private EbeanServer ebeanServer;
 
-/*
     @Inject
     public ProductRepository(EbeanConfig ebeanConfig) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
     }
-*/
 
     public List<ProductMy> getAllProducts() {
-//        return ebeanServer.find(ProductMy.class).findList();
-        return ProductMy.find.all();
+        return ebeanServer.find(ProductMy.class).findList();
     }
 
     public Optional<ProductMy> lookup(Long id) {
-//        return Optional.ofNullable(ebeanServer.find(ProductMy.class).setId(id).findOne());
-        return Optional.ofNullable(ProductMy.find.byId(id));
+        return Optional.ofNullable(ebeanServer.find(ProductMy.class).setId(id).findOne());
     }
 
     public Optional<Long> update(Long id, ProductMy product) {
-//        Transaction txn = ebeanServer.beginTransaction();
+        Transaction txn = ebeanServer.beginTransaction();
         Optional<Long> value = Optional.empty();
-        //            ProductMy savedProduct = ebeanServer.find(ProductMy.class).setId(id).findOne();
-        ProductMy savedProduct = ProductMy.find.byId(id);
-        if (savedProduct != null) {
-            savedProduct.releaseDate = product.releaseDate;
-            savedProduct.model = product.model;
-            savedProduct.brand = product.brand;
-            savedProduct.article = product.article;
-            savedProduct.update();
-            savedProduct.save();
-            value = Optional.of(id);
+        try {
+            ProductMy savedProduct = ebeanServer.find(ProductMy.class).setId(id).findOne();
+            if (savedProduct != null) {
+                savedProduct.releaseDate = product.releaseDate;
+                savedProduct.model = product.model;
+                savedProduct.brand = product.brand;
+                savedProduct.article = product.article;
+                savedProduct.update();
+                txn.commit();
+                value = Optional.of(id);
+            }
+        } finally {
+            txn.end();
         }
         return value;
     }
 
     public Optional<Long> delete(Long id) {
         try {
-//            Optional<ProductMy> productOptional = Optional.ofNullable(ebeanServer.find(ProductMy.class).setId(id).findOne());
-            Optional<ProductMy> productOptional = Optional.ofNullable(ProductMy.find.byId(id));
+            Optional<ProductMy> productOptional = Optional.ofNullable(ebeanServer.find(ProductMy.class).setId(id).findOne());
             productOptional.ifPresent(Model::delete);
             return productOptional.map(c -> c.id);
         } catch (Exception e) {
@@ -58,8 +61,7 @@ public class ProductRepository {
 
     public Optional<Long> insert(ProductMy product) {
         if (product.releaseDate == null) product.releaseDate = new Date();
-//        ebeanServer.insert(product);
-        product.save();
+        ebeanServer.insert(product);
         return Optional.of(product.id);
     }
 }

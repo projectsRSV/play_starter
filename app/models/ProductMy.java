@@ -1,6 +1,5 @@
 package models;
 
-import io.ebean.Finder;
 import io.ebean.Model;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
@@ -30,8 +29,6 @@ public class ProductMy extends Model {
 
     @Formats.DateTime(pattern = "yyyy-MM-dd")
     public Date releaseDate;
-
-    public static Finder<Long, ProductMy> find = new Finder<>(ProductMy.class);
 
 }
 
